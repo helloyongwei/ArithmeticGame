@@ -1,41 +1,72 @@
 package com;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 import com.Arithmetic;
 
 public class Main {
 	public static void main(String[] args) throws IOException {
-	
-		while (true) {
+		int value = 0;
+		do {
 			showMenu();
-			int value = inputItem();
-			switch (value) {
-			case 1: 
-				quantity();
-				break;
-			case 2:
-				timing();
-				break;
+			value = inputNumber();
+			if (value < 1 || value > 5 ) {
+				showSpace();
+				System.out.println("-选项越界");
+			} else if (value >= 1 && value <= 4) {
+				excute(value);
 			}
-		}
-		
-		
 			
+		} while (value != 5);
+	}
+	
+	public static void excute(int value) throws IOException {
+		switch (value) {
+		case 1: 
+			quantity();
+			break;
+		case 2:
+			timing();
+			break;
+		case 3:
+			save();
+		case 4: 
+			show();
+			break;
+		}
+	}
+	
+	public static void save() throws IOException {
+		OutputStream out = new FileOutputStream("records.text", true);
+		String msg = "Hi";
+		byte[] bs = msg.getBytes();
+		out.write(bs);
+		out.close();
+	}
+	
+	public static void show() throws IOException {
+		byte[] bs = new byte[1024];
+		InputStream is = new FileInputStream("records.text");
+		int len = is.read(bs);
+		String msg = new String(bs, 0, len);
+		System.out.println(msg);
+		is.close();
 	}
 	
 	public static void timing() throws IOException {
 		
 		ArrayList<Arithmetic> arithmetics = new ArrayList<Arithmetic>();
-		System.out.print("Please input a time: ");
+		System.out.print("请输入时间（毫秒）: ");
 		int time = inputNumber();
 		int[] a = computeByTiming(arithmetics, time);
 		showResult(arithmetics);
 		System.out.println("The score is : " + (100* (double)a[0]/a[1]));
 	}
-	
 	
 	public static int[] computeByTiming(ArrayList<Arithmetic> arithmetics, int time) throws IOException {
 		int[] a = new int[2];
@@ -71,11 +102,11 @@ public class Main {
 	public static void quantity() throws IOException {
 		ArrayList<Arithmetic> arithmetics = new ArrayList<Arithmetic>();
 		int count = 0;
-		System.out.print("Please input a number: ");
+		System.out.print("请输入答题数: ");
 		count = inputNumber();
 		int correct = computeByQuantity(arithmetics, count);
 		showResult(arithmetics);
-		System.out.println("The score is : " + (100* (double)correct/count));
+		System.out.println("你的得分为: " + (100* (double)correct/count));
 	}
 	
 	public static int computeByQuantity(ArrayList<Arithmetic> arithmetics, int count) throws IOException {
